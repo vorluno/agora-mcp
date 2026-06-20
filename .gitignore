@@ -1,0 +1,5 @@
+node_modules/
+.agora/
+*.log
+dist/
+.DS_Store
