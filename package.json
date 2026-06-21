@@ -1,0 +1,21 @@
+{
+  "name": "agora-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": { "agora-mcp": "./src/index.ts", "agora-hook": "./src/hook.ts" },
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "init": "bun run src/cli.ts init",
+    "test": "bun test",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5"
+  }
+}
