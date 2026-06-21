@@ -23,17 +23,8 @@ export function recordTouch(
   upsertClaim(db, { sessionId: input.sessionId, filePath: input.filePath });
   touchSession(db, input.sessionId);
   logEvent(db, { sessionId: input.sessionId, type: "file_touched", payload: { filePath: input.filePath } });
-  const afterClaims = listActiveClaims(db);
-  const after = detectFileConflicts(afterClaims);
-  let fresh = after.find((c) => c.filePath === input.filePath && !before.has(c.filePath)) ?? null;
-  if (fresh) {
-    // Sort sessionIds by first_touched_at ascending so order is deterministic (first claimer first)
-    const claimOrder = new Map(afterClaims.map((c) => [c.sessionId, c.firstTouchedAt]));
-    fresh = {
-      ...fresh,
-      sessionIds: [...fresh.sessionIds].sort((a, b) => (claimOrder.get(a) ?? 0) - (claimOrder.get(b) ?? 0)),
-    };
-  }
+  const after = detectFileConflicts(listActiveClaims(db));
+  const fresh = after.find((c) => c.filePath === input.filePath && !before.has(c.filePath)) ?? null;
   if (fresh) {
     logEvent(db, { sessionId: input.sessionId, type: "conflict_detected", payload: fresh });
   }

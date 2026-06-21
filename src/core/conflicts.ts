@@ -1,17 +1,21 @@
 import type { FileClaim, Session, FileConflict, BranchCollision } from "../types";
 
 export function detectFileConflicts(claims: FileClaim[]): FileConflict[] {
-  const byFile = new Map<string, Set<string>>();
+  const byFile = new Map<string, Map<string, number>>(); // filePath -> (sessionId -> firstTouchedAt)
   for (const c of claims) {
     if (c.releasedAt !== null) continue;
     if (c.mode !== "writing") continue;
-    let set = byFile.get(c.filePath);
-    if (!set) { set = new Set(); byFile.set(c.filePath, set); }
-    set.add(c.sessionId);
+    let m = byFile.get(c.filePath);
+    if (!m) { m = new Map(); byFile.set(c.filePath, m); }
+    const prev = m.get(c.sessionId);
+    m.set(c.sessionId, prev === undefined ? c.firstTouchedAt : Math.min(prev, c.firstTouchedAt));
   }
   const out: FileConflict[] = [];
   for (const [filePath, sessions] of byFile) {
-    if (sessions.size >= 2) out.push({ filePath, sessionIds: [...sessions] });
+    if (sessions.size >= 2) {
+      const sessionIds = [...sessions.entries()].sort((a, b) => a[1] - b[1]).map(([id]) => id);
+      out.push({ filePath, sessionIds });
+    }
   }
   return out;
 }
