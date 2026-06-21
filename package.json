@@ -1,9 +1,42 @@
 {
-  "name": "agora-mcp",
+  "name": "@vorluno/agora-mcp",
   "version": "0.1.0",
-  "private": true,
   "type": "module",
-  "bin": { "agora-mcp": "./src/index.ts", "agora-hook": "./src/hook.ts" },
+  "description": "A shared, persistent per-repo space for Claude Code sessions — see what others are doing, get collision warnings, and leave notes. MCP server, no daemon.",
+  "mcpName": "io.github.vorluno/agora-mcp",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "claude",
+    "claude-code",
+    "ai-agents",
+    "multi-agent",
+    "sqlite",
+    "bun"
+  ],
+  "homepage": "https://github.com/vorluno/agora-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vorluno/agora-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vorluno/agora-mcp/issues"
+  },
+  "author": "Vorluno (https://vorluno.dev)",
+  "license": "MIT",
+  "bin": {
+    "agora-mcp": "./src/index.ts",
+    "agora-hook": "./src/hook.ts"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "start": "bun run src/index.ts",
     "init": "bun run src/cli.ts init",

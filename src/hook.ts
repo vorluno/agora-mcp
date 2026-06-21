@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import type { Database } from "bun:sqlite";
 import { openDb as realOpenDb } from "./store/db";
 import { agoraDbPath } from "./lib/space-path";
