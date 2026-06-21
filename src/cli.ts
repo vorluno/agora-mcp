@@ -21,6 +21,12 @@ export function addAgoraToGitignore(existing: string): string {
   return base + ".agora/\n";
 }
 
+/** PURO: ruta del settings.json — global (home) o por proyecto (cwd) con `--project`. */
+export function resolveSettingsPath(project: boolean, home: string, cwd: string): string {
+  const base = (project ? cwd : home).replace(/\\/g, "/");
+  return `${base}/.claude/settings.json`;
+}
+
 /** PURO: agrega los hooks de agora a `settings` sin pisar ni duplicar. */
 export function mergeHooks(settings: any, hookCommandPrefix: string): any {
   const out = structuredClone(settings ?? {});
@@ -38,14 +44,19 @@ export function mergeHooks(settings: any, hookCommandPrefix: string): any {
 }
 
 async function main(): Promise<void> {
-  const settingsPath = `${homedir().replace(/\\/g, "/")}/.claude/settings.json`;
+  const project = process.argv.includes("--project");
+  const settingsPath = resolveSettingsPath(project, homedir(), process.cwd());
   const file = Bun.file(settingsPath);
   const current = (await file.exists()) ? JSON.parse(await file.text()) : {};
   const prefix = "bun run C:/agora-mcp/src/hook.ts";
   const merged = mergeHooks(current, prefix);
   await Bun.write(settingsPath, JSON.stringify(merged, null, 2));
-  console.error(`agora: hooks instalados en ${settingsPath}`);
-  console.error("agora: registrá el MCP con: claude mcp add agora -- bun run C:/agora-mcp/src/index.ts");
+  console.error(`agora: hooks instalados en ${settingsPath} (scope ${project ? "proyecto" : "global"})`);
+  console.error(
+    project
+      ? "agora: registrá el MCP (scope local) con: claude mcp add -s local agora -- bun run C:/agora-mcp/src/index.ts"
+      : "agora: registrá el MCP con: claude mcp add agora -- bun run C:/agora-mcp/src/index.ts",
+  );
   const repoRoot = mainRepoRoot(process.cwd());
   if (repoRoot) {
     const giPath = `${repoRoot}/.gitignore`;
