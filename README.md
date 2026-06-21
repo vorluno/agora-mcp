@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="./assets/banner.jpg" alt="agora — a shared space for your Claude Code sessions" width="100%" />
+
 # agora
 
 **A shared, persistent space for your Claude Code sessions — per repository.**
