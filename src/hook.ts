@@ -70,7 +70,10 @@ async function main(): Promise<void> {
     const dbPath = agoraDbPath(cwd);
     const branch = currentBranch(cwd);
     const out = handleHook(event, input, { dbPath, openDb: realOpenDb, branch });
-    if (out) process.stdout.write(out + "\n");
+    if (out) {
+      const payload = { hookSpecificOutput: { hookEventName: event, additionalContext: out } };
+      process.stdout.write(JSON.stringify(payload) + "\n");
+    }
   } catch {
     // tragamos todo
   } finally {

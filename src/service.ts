@@ -1,11 +1,16 @@
 import type { Database } from "bun:sqlite";
 import type {
-  Session, SessionStatus, FileConflict, BranchCollision, AgoraEvent,
+  Session, SessionStatus, FileConflict, BranchCollision, AgoraEvent, FileClaim,
 } from "./types";
 import { registerOrTouchSession, setStatus, touchSession, listSessions, listActiveSessions } from "./store/sessions";
 import { upsertClaim, releaseAllForSession, listActiveClaims } from "./store/claims";
 import { logEvent, listEventsSince } from "./store/events";
 import { detectFileConflicts, detectBranchCollisions } from "./core/conflicts";
+
+function activeClaimsOnly(db: Database, sinceMs: number): FileClaim[] {
+  const activeIds = new Set(listActiveSessions(db, sinceMs).map((s) => s.sessionId));
+  return listActiveClaims(db).filter((c) => activeIds.has(c.sessionId));
+}
 
 export function enterSession(
   db: Database,
@@ -39,10 +44,10 @@ export function markStatus(db: Database, sessionId: string, status: SessionStatu
 
 export function collisionsFor(
   db: Database,
-  input: { sessionId: string; paths: string[]; branch?: string },
+  input: { sessionId?: string; paths: string[]; branch?: string },
   sinceMs: number,
 ): { fileConflicts: FileConflict[]; branchCollisions: BranchCollision[] } {
-  const claims = listActiveClaims(db);
+  const claims = activeClaimsOnly(db, sinceMs);
   const fileConflicts = detectFileConflicts(claims).filter(
     (c) => input.paths.includes(c.filePath) && c.sessionIds.some((id) => id !== input.sessionId),
   );
@@ -62,7 +67,7 @@ export function buildResume(
   const sessions = listSessions(db);
   const active = listActiveSessions(db, sinceMs);
   const recentActivity = listEventsSince(db, sinceMs, { limit: 30 });
-  const fileConflicts = detectFileConflicts(listActiveClaims(db));
+  const fileConflicts = detectFileConflicts(activeClaimsOnly(db, sinceMs));
   const branchCollisions = detectBranchCollisions(active);
   const parts: string[] = [`📋 agora — ${active.length} sesión(es) activa(s).`];
   for (const s of active) {

@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test";
-import { mergeHooks } from "../src/cli";
+import { mergeHooks, addAgoraToGitignore } from "../src/cli";
 
 const PREFIX = "bun run C:/agora-mcp/src/hook.ts";
 
@@ -24,4 +24,12 @@ test("conserva hooks ajenos existentes", () => {
   const cmds = out.hooks.SessionStart.flatMap((g: any) => g.hooks.map((h: any) => h.command));
   expect(cmds.some((c: string) => c.includes("echo mio"))).toBe(true);
   expect(cmds.some((c: string) => c.includes("agora"))).toBe(true);
+});
+
+test("addAgoraToGitignore agrega .agora/ una vez (idempotente)", () => {
+  expect(addAgoraToGitignore("")).toContain(".agora/");
+  const once = addAgoraToGitignore("node_modules/\n");
+  expect(once).toContain("node_modules/");
+  expect(once).toContain(".agora/");
+  expect(addAgoraToGitignore(once)).toBe(once);
 });

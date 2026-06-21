@@ -93,7 +93,7 @@ export function createServer(deps: ServerDeps): McpServer {
     {
       title: "Check collision",
       description: "¿Otra sesión activa está tocando estos archivos o esta rama?",
-      inputSchema: { sessionId: z.string(), paths: z.array(z.string()), branch: z.string().optional() },
+      inputSchema: { sessionId: z.string().optional(), paths: z.array(z.string()), branch: z.string().optional() },
       outputSchema: { fileConflicts: z.array(z.any()), branchCollisions: z.array(z.any()), ok: z.boolean() },
     },
     async ({ sessionId, paths, branch }) => {
@@ -109,13 +109,13 @@ export function createServer(deps: ServerDeps): McpServer {
     {
       title: "Leave note",
       description: "Deja una nota para otra sesión (to) o para todas (broadcast si se omite to).",
-      inputSchema: { fromSession: z.string(), to: z.string().optional(), body: z.string().min(1) },
+      inputSchema: { fromSession: z.string().optional(), to: z.string().optional(), body: z.string().min(1) },
       outputSchema: { id: z.string() },
     },
     async ({ fromSession, to, body }) => {
       const db = open();
       if (!db) return fail("Este repo no tiene ágora (no es repo git o sin actividad).");
-      const n = addNote(db, { fromSession, toSession: to ?? null, body });
+      const n = addNote(db, { fromSession: fromSession ?? "anon", toSession: to ?? null, body });
       return ok({ id: n.id });
     },
   );
@@ -125,7 +125,7 @@ export function createServer(deps: ServerDeps): McpServer {
     {
       title: "Read notes",
       description: "Lee notas dirigidas a una sesión (o broadcast) y las marca leídas.",
-      inputSchema: { forSession: z.string(), unreadOnly: z.boolean().optional() },
+      inputSchema: { forSession: z.string().optional(), unreadOnly: z.boolean().optional() },
       outputSchema: { notes: z.array(z.any()) },
     },
     async ({ forSession, unreadOnly }) => {

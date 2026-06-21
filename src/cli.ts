@@ -1,4 +1,5 @@
 import { homedir } from "os";
+import { mainRepoRoot } from "./lib/git";
 
 // Los 5 hooks de agora. matcher "" = todos; Edit|Write para tool hooks.
 const AGORA_HOOKS: { event: string; matcher: string; arg: string }[] = [
@@ -11,6 +12,13 @@ const AGORA_HOOKS: { event: string; matcher: string; arg: string }[] = [
 
 function isAgoraCommand(cmd: unknown): boolean {
   return typeof cmd === "string" && cmd.includes("agora") && cmd.includes("hook");
+}
+
+export function addAgoraToGitignore(existing: string): string {
+  const lines = existing.split(/\r?\n/);
+  if (lines.some((l) => l.trim() === ".agora/")) return existing;
+  const base = existing === "" ? "" : existing.endsWith("\n") ? existing : existing + "\n";
+  return base + ".agora/\n";
 }
 
 /** PURO: agrega los hooks de agora a `settings` sin pisar ni duplicar. */
@@ -38,6 +46,16 @@ async function main(): Promise<void> {
   await Bun.write(settingsPath, JSON.stringify(merged, null, 2));
   console.error(`agora: hooks instalados en ${settingsPath}`);
   console.error("agora: registrá el MCP con: claude mcp add agora -- bun run C:/agora-mcp/src/index.ts");
+  const repoRoot = mainRepoRoot(process.cwd());
+  if (repoRoot) {
+    const giPath = `${repoRoot}/.gitignore`;
+    const existing = (await Bun.file(giPath).exists()) ? await Bun.file(giPath).text() : "";
+    const updated = addAgoraToGitignore(existing);
+    if (updated !== existing) {
+      await Bun.write(giPath, updated);
+      console.error(`agora: .agora/ agregado a ${giPath}`);
+    }
+  }
 }
 
 if (import.meta.main) void main();
