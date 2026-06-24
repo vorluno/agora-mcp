@@ -1,7 +1,12 @@
 import { test, expect } from "bun:test";
-import { mergeHooks, addAgoraToGitignore } from "../src/cli";
+import { mergeHooks, addAgoraToGitignore, resolveSettingsPath } from "../src/cli";
 
 const PREFIX = "bun run C:/agora-mcp/src/hook.ts";
+
+test("resolveSettingsPath: global usa home, --project usa cwd", () => {
+  expect(resolveSettingsPath(false, "C:\\Users\\j", "C:\\proj")).toBe("C:/Users/j/.claude/settings.json");
+  expect(resolveSettingsPath(true, "C:\\Users\\j", "C:\\proj")).toBe("C:/proj/.claude/settings.json");
+});
 
 test("agrega los 5 hooks de agora", () => {
   const out = mergeHooks({}, PREFIX);
