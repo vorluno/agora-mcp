@@ -1,0 +1,39 @@
+# CI — corre en cada push y cada pull request.
+#
+# Público = minutos GRATIS e ilimitados en los runners estándar de GitHub, así que esto no cuesta
+# nada aunque los repositorios privados de la organización tengan el gasto cerrado.
+#
+# El permiso por defecto es `contents: read` y nada más. Un workflow sin `permissions` hereda el
+# token amplio del repositorio, y ése es el que un script de una dependencia usaría si pudiera.
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test · ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - name: Type-check
+        run: bunx tsc --noEmit
+      - name: Tests
+        run: bun test

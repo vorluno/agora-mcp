@@ -1,0 +1,50 @@
+# Publicación con PROCEDENCIA. Se dispara al empujar una etiqueta `v*`.
+#
+# `--provenance` es lo que pone la insignia verde de «Built and signed on GitHub Actions» en npm:
+# firma un documento que dice de qué commit y de qué workflow salió ese tarball. Es verificable por
+# cualquiera y es la diferencia entre «confía en mí» y «compruébalo». Exige `id-token: write`.
+#
+# Necesita el secreto NPM_TOKEN (un token de automatización de npm) en la configuración del repo.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: bun install --frozen-lockfile
+      - name: Type-check
+        run: bunx tsc --noEmit
+      - name: Tests
+        run: bun test
+      # La etiqueta y el package.json tienen que decir lo mismo. Publicar una v0.2.0 desde un
+      # package.json que dice 0.1.9 deja un release que no se corresponde con nada.
+      - name: La etiqueta coincide con package.json
+        run: |
+          set -euo pipefail
+          etiqueta="${GITHUB_REF_NAME#v}"
+          manifiesto="$(node -p "require('./package.json').version")"
+          if [ "$etiqueta" != "$manifiesto" ]; then
+            echo "::error::la etiqueta dice $etiqueta y package.json dice $manifiesto"
+            exit 1
+          fi
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,18 @@
+Copyright 2026 Vorluno (https://vorluno.dev)
+
+This product includes software developed at Vorluno.
+
+Licensing history
+-----------------
+
+Versions up to and including 0.1.0 were released under the MIT License. Those
+releases remain available under MIT — a licence already granted cannot be
+withdrawn, and nothing here asks you to stop relying on it.
+
+From 0.2.0 onwards this project is licensed under the Apache License,
+Version 2.0. The change was made so that every Vorluno repository carries the
+same licence, and because Apache-2.0 grants patent rights explicitly, which MIT
+leaves unsaid.
+
+The copyright holder is unchanged and is the sole author of every commit, so no
+contributor consent was required for the change.

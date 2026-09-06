@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { homedir } from "os";
 import { mainRepoRoot } from "./lib/git";
 

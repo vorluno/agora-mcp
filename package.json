@@ -1,6 +1,6 @@
 {
   "name": "@vorluno/agora-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "A shared, persistent per-repo space for Claude Code sessions — see what others are doing, get collision warnings, and leave notes. MCP server, no daemon.",
   "mcpName": "io.github.vorluno/agora-mcp",
@@ -24,16 +24,22 @@
     "url": "https://github.com/vorluno/agora-mcp/issues"
   },
   "author": "Vorluno (https://vorluno.dev)",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bin": {
     "agora-mcp": "./src/index.ts",
-    "agora-hook": "./src/hook.ts"
+    "agora-hook": "./src/hook.ts",
+    "agora-init": "./src/cli.ts"
   },
   "files": [
     "src",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "NOTICE",
+    "CHANGELOG.md"
   ],
+  "engines": {
+    "bun": ">=1.3.0"
+  },
   "publishConfig": {
     "access": "public"
   },

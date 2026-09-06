@@ -1,0 +1,19 @@
+# Dependabot — actualizaciones de dependencias y de las propias acciones.
+#
+# `github-actions` importa tanto como `npm`: una acción fijada a una etiqueta móvil (`@v4`) es
+# código de terceros que corre con el token del repositorio, y la mitad de los incidentes de
+# suministro de 2024-2025 entraron por ahí.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev:
+        dependency-type: development
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
