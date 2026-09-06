@@ -1,3 +1,7 @@
+# NOTE: these workflows are currently switched off in the repository's Actions settings, so pull
+# requests will not show automatic checks. They are kept here, working and ready, and turning them
+# back on is one switch. Until then the same checks run locally — see CONTRIBUTING.md.
+#
 # CI — corre en cada push y cada pull request.
 #
 # Público = minutos GRATIS e ilimitados en los runners estándar de GitHub, así que esto no cuesta

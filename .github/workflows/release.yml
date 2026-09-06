@@ -1,3 +1,7 @@
+# NOTE: these workflows are currently switched off in the repository's Actions settings, so pull
+# requests will not show automatic checks. They are kept here, working and ready, and turning them
+# back on is one switch. Until then the same checks run locally — see CONTRIBUTING.md.
+#
 # Publicación con PROCEDENCIA. Se dispara al empujar una etiqueta `v*`.
 #
 # `--provenance` es lo que pone la insignia verde de «Built and signed on GitHub Actions» en npm:

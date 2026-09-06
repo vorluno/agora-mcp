@@ -27,8 +27,10 @@ conversation before they are a pull request.**
 1. **Open an issue first** unless it is a small, obvious fix. Ten minutes of writing can save you an
    afternoon of code we were never going to merge.
 2. **One change per pull request.** A fix bundled with a refactor is a fix nobody can review.
-3. **Run the checks.** `bun test` and `bunx tsc --noEmit`. If something is red for a reason you
-   believe is unrelated, say so in the description — do not silence it.
+3. **Run the checks yourself.** `bun test` and `bunx tsc --noEmit`. Automatic checks are switched
+   off at the moment, so a pull request arrives with nothing running on it — say in the description
+   that both are green on your machine, and if one is red for a reason you believe is unrelated, say
+   that too rather than silencing it.
 
 ## What to expect
 
