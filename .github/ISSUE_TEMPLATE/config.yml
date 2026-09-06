@@ -6,3 +6,6 @@ contact_links:
   - name: Security vulnerability
     url: https://github.com/vorluno/agora-mcp/security/policy
     about: Do not open an issue. Email security@vorluno.dev — we acknowledge within 72 hours.
+  - name: Question about using this
+    url: https://github.com/vorluno/agora-mcp/discussions
+    about: Usage questions go to Discussions. Issues are for defects.
