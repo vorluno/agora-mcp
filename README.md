@@ -17,6 +17,17 @@ See what other sessions are doing, get warned before you overwrite their work, a
 
 ---
 
+> ## Retired
+>
+> **Claude Code now does this itself.** Sessions coordinate, see each other's work and share state
+> without a separate MCP server in between, which is what this existed to provide.
+>
+> The repository is archived and read-only. **It still works** — nothing was removed from npm, and the
+> last published version keeps installing — but it will not be maintained, and it does not need to be.
+> If you want the idea rather than the package, the whole design is in `docs/` and the licence lets you
+> take it.
+
+
 ## Why
 
 When several Claude Code sessions work on the same repository — in parallel, or just over the course of a day — they're **blind to each other**. None of them knows what the others touched, they overwrite the same files silently, and the context is lost when you close them.
